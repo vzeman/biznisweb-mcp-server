@@ -24,13 +24,20 @@ from gql.transport.httpx import HTTPXAsyncTransport
 load_dotenv()
 
 # Configuration
-API_URL = os.getenv('BIZNISWEB_API_URL', 'https://vevo.flox.sk/api/graphql')
+API_URL = os.getenv('BIZNISWEB_API_URL', 'https://www.vevo.sk/api/graphql')
 API_TOKEN = os.getenv('BIZNISWEB_API_TOKEN')
+
+# Debug logging
+import sys
+print(f"DEBUG: Working directory: {os.getcwd()}", file=sys.stderr)
+print(f"DEBUG: .env file exists: {os.path.exists('.env')}", file=sys.stderr)
+print(f"DEBUG: API_TOKEN loaded: {'Yes' if API_TOKEN else 'No'}", file=sys.stderr)
+print(f"DEBUG: API_URL: {API_URL}", file=sys.stderr)
 
 # GraphQL Queries
 ORDER_LIST_QUERY = gql("""
-query GetOrders($filter: OrderFilter, $params: OrderParams) {
-  getOrderList(filter: $filter, params: $params) {
+query GetOrders($status: Int, $newer_from: DateTime, $changed_from: DateTime, $params: OrderParams, $filter: OrderFilter) {
+  getOrderList(status: $status, newer_from: $newer_from, changed_from: $changed_from, params: $params, filter: $filter) {
     data {
       id
       order_num
@@ -47,6 +54,9 @@ query GetOrders($filter: OrderFilter, $params: OrderParams) {
         ... on Person {
           name
           surname
+          email
+        }
+        ... on UnauthenticatedEmail {
           email
         }
       }
@@ -243,45 +253,48 @@ class BizniWebMCPServer:
                 else:
                     result = {"error": f"Unknown tool: {name}"}
                 
-                return [TextContent(text=json.dumps(result, indent=2, ensure_ascii=False))]
+                return [TextContent(type="text", text=json.dumps(result, indent=2, ensure_ascii=False))]
                 
             except Exception as e:
                 logger.error(f"Error in tool {name}: {str(e)}")
                 result = {"error": str(e)}
-                return [TextContent(text=json.dumps(result, indent=2))]
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
     
     async def _init_client(self):
         """Initialize GraphQL client"""
         if not API_TOKEN:
+            logger.error(f"API_TOKEN is missing. Environment: {list(os.environ.keys())}")
             raise ValueError("BIZNISWEB_API_TOKEN not found in environment variables")
         
         transport = HTTPXAsyncTransport(
             url=API_URL,
-            headers={'BW-API-Key': f'Token {API_TOKEN}'}
+            headers={
+                'BW-API-Key': f'Token {API_TOKEN}',
+                'Content-Type': 'application/json'
+            }
         )
         self.client = Client(transport=transport, fetch_schema_from_transport=False)
     
     async def _list_orders(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """List orders with optional filtering"""
-        filter_params = {}
+        variables = {}
         
+        # Add date filters directly as query parameters
         if 'from_date' in args:
-            filter_params['pur_date_from'] = args['from_date']
+            variables['newer_from'] = args['from_date'] + 'T00:00:00'
         if 'to_date' in args:
-            filter_params['pur_date_to'] = args['to_date']
+            # For 'changed_from', we might want to use this for filtering
+            variables['changed_from'] = args['to_date'] + 'T23:59:59'
         
-        params = {
+        # Add status if provided
+        if 'status' in args:
+            variables['status'] = args['status']
+        
+        # OrderParams for pagination/sorting
+        variables['params'] = {
             'limit': args.get('limit', 30),
             'order_by': 'pur_date',
             'sort': 'DESC'
-        }
-        
-        if 'status' in args:
-            params['status'] = args['status']
-        
-        variables = {
-            'filter': filter_params,
-            'params': params
         }
         
         async with self.client as session:
@@ -401,10 +414,8 @@ class BizniWebMCPServer:
                 params['cursor'] = cursor
             
             variables = {
-                'filter': {
-                    'pur_date_from': from_date.strftime('%Y-%m-%d'),
-                    'pur_date_to': to_date.strftime('%Y-%m-%d')
-                },
+                'newer_from': from_date.strftime('%Y-%m-%dT00:00:00'),
+                'changed_from': to_date.strftime('%Y-%m-%dT23:59:59'),
                 'params': params
             }
             
