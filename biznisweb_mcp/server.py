@@ -8,10 +8,12 @@ Provides tools for interacting with BizniWeb e-shop through GraphQL API
 import os
 import json
 import asyncio
+import logging
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
-from mcp.server import Server
+from mcp.server import Server, NotificationOptions
+from mcp.server.models import InitializationOptions
 from mcp.types import Tool, TextContent
 from mcp.server.stdio import stdio_server
 from dotenv import load_dotenv
@@ -133,6 +135,10 @@ query GetOrder($orderNum: String!) {
 }
 """)
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 class BizniWebMCPServer:
     def __init__(self):
         self.server = Server("biznisweb-mcp")
@@ -240,6 +246,7 @@ class BizniWebMCPServer:
                 return [TextContent(text=json.dumps(result, indent=2, ensure_ascii=False))]
                 
             except Exception as e:
+                logger.error(f"Error in tool {name}: {str(e)}")
                 result = {"error": str(e)}
                 return [TextContent(text=json.dumps(result, indent=2))]
     
@@ -412,12 +419,6 @@ class BizniWebMCPServer:
             has_next = page_info.get('hasNextPage', False)
             cursor = page_info.get('nextCursor')
         
-        # Calculate statistics
-        total_revenue = 0
-        total_items = 0
-        status_counts = {}
-        daily_stats = {}
-        
         # Define excluded statuses
         excluded_statuses = [
             'Storno',
@@ -426,6 +427,12 @@ class BizniWebMCPServer:
             'Čaká na úhradu',
             'GoPay - platebni metoda potvrzena'
         ]
+        
+        # Calculate statistics
+        total_revenue = 0
+        total_items = 0
+        status_counts = {}
+        daily_stats = {}
         
         for order in all_orders:
             # Skip orders with excluded statuses
@@ -528,7 +535,14 @@ class BizniWebMCPServer:
     async def run(self):
         """Run the MCP server"""
         async with stdio_server() as (read_stream, write_stream):
-            await self.server.run(read_stream, write_stream)
+            await self.server.run(
+                read_stream,
+                write_stream,
+                InitializationOptions(
+                    server_name="biznisweb-mcp",
+                    server_version="0.1.0"
+                )
+            )
 
 def main():
     """Main entry point"""
