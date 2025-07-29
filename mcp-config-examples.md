@@ -12,7 +12,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
       "args": ["-m", "biznisweb_mcp"],
       "env": {
         "BIZNISWEB_API_TOKEN": "your_token_here",
-        "BIZNISWEB_API_URL": "https://www.vevo.sk/api/graphql"
+        "BIZNISWEB_API_URL": "https://vevo.flox.sk/api/graphql"
       }
     }
   }
@@ -33,7 +33,7 @@ Add to your Windsurf MCP configuration:
         "cwd": "/path/to/biznisweb-mcp-server",
         "env": {
           "BIZNISWEB_API_TOKEN": "your_token_here",
-          "BIZNISWEB_API_URL": "https://www.vevo.sk/api/graphql"
+          "BIZNISWEB_API_URL": "https://vevo.flox.sk/api/graphql"
         }
       }
     }

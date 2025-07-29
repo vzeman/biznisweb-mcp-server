@@ -24,7 +24,7 @@ from gql.transport.httpx import HTTPXAsyncTransport
 load_dotenv()
 
 # Configuration
-API_URL = os.getenv('BIZNISWEB_API_URL', 'https://www.vevo.sk/api/graphql')
+API_URL = os.getenv('BIZNISWEB_API_URL', 'https://vevo.flox.sk/api/graphql')
 API_TOKEN = os.getenv('BIZNISWEB_API_TOKEN')
 
 # GraphQL Queries
@@ -540,7 +540,11 @@ class BizniWebMCPServer:
                 write_stream,
                 InitializationOptions(
                     server_name="biznisweb-mcp",
-                    server_version="0.1.0"
+                    server_version="0.1.0",
+                    capabilities=self.server.get_capabilities(
+                        notification_options=NotificationOptions(),
+                        experimental_capabilities={}
+                    )
                 )
             )
 

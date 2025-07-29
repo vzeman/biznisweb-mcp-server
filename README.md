@@ -73,7 +73,7 @@ cp .env.example .env
 The `.env` file should contain:
 ```
 BIZNISWEB_API_TOKEN=your_api_token_here
-BIZNISWEB_API_URL=https://www.vevo.sk/api/graphql
+BIZNISWEB_API_URL=https://[youraccount].flox.sk/api/graphql
 ```
 
 ## Usage
@@ -96,7 +96,7 @@ BIZNISWEB_API_URL=https://www.vevo.sk/api/graphql
       "cwd": "/Users/viktorzeman/work/biznisweb-mcp-server",
       "env": {
         "BIZNISWEB_API_TOKEN": "your_token_here",
-        "BIZNISWEB_API_URL": "https://www.vevo.sk/api/graphql"
+        "BIZNISWEB_API_URL": "https://vevo.flox.sk/api/graphql"
       }
     }
   }
@@ -226,7 +226,7 @@ Use the search_orders tool to find orders from customer "John Doe"
 ## Environment Variables
 
 - `BIZNISWEB_API_TOKEN`: Your BizniWeb API token (required)
-- `BIZNISWEB_API_URL`: API endpoint URL (default: https://www.vevo.sk/api/graphql)
+- `BIZNISWEB_API_URL`: API endpoint URL (default: https://vevo.flox.sk/api/graphql)
 
 ## Getting Your API Token
 
@@ -256,7 +256,7 @@ Use the search_orders tool to find orders from customer "John Doe"
 
 4. **Connection errors**
    - Check your internet connection
-   - Verify the API URL is correct (should be https://www.vevo.sk/api/graphql)
+   - Verify the API URL is correct (should be https://vevo.flox.sk/api/graphql)
    - Ensure your BizniWeb account has API access enabled
 
 ### Debug Mode
