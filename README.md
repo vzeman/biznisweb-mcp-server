@@ -1,6 +1,7 @@
 # BizniWeb MCP Server
 
 A Model Context Protocol (MCP) server that enables LLMs to interact with BizniWeb e-shop through GraphQL API. This server allows AI assistants like Claude to access your BizniWeb data directly through conversational interfaces.
+We develop MCP servers for various platforms. If you need a custom MCP server for your business, check out our services at [FlowHunt](https://www.flowhunt.io/services/mcp-server-development/).
 
 ## What is MCP?
 
@@ -325,5 +326,7 @@ This project is licensed under the MIT License.
 ## Support
 
 For issues or questions:
+- Contact the MCP server developers: https://www.flowhunt.io/contact
+- We can develop your own MCP server, read more: https://www.flowhunt.io/services/mcp-server-development/
 - Create an issue on GitHub: https://github.com/vzeman/biznisweb-mcp-server/issues
 - Check the MCP documentation: https://modelcontextprotocol.io/
