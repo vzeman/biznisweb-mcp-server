@@ -237,6 +237,16 @@ Use the search_orders tool to find orders from customer "John Doe"
 4. Copy the generated token
 5. Add it to your `.env` file or Claude configuration
 
+### API Token Setup in BizniWeb
+
+![BizniWeb API Token Setup](docs/biznisweb-api-token-setup.png)
+
+The screenshot above shows where to find and configure your API token in the BizniWeb admin panel:
+- Access the **BiznisWeb API** section from the Settings menu
+- Your API token will be displayed in the token field
+- The token format is: `b93jWTLi8SNmO1SaZYWOPsK8S5z7WTzN`
+- You can see API usage statistics below the token
+
 ## Troubleshooting
 
 ### Common Issues
