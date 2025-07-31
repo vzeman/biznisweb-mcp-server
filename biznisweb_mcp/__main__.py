@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Entry point for the BizniWeb MCP server when run as a module
+Entry point for the BiznisWeb MCP server when run as a module
 """
 
 from .server import main

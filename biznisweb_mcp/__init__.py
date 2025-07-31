@@ -1,4 +1,4 @@
-"""BizniWeb MCP Server"""
+"""BiznisWeb MCP Server"""
 
 from .server import main
 
