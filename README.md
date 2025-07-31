@@ -1,6 +1,34 @@
 # BizniWeb MCP Server
 
 A Model Context Protocol (MCP) server that enables LLMs to interact with BizniWeb e-shop through GraphQL API. This server allows AI assistants like Claude to access your BizniWeb data directly through conversational interfaces.
+
+## Demo
+
+![BizniWeb AI Agent Demo](AI-Agent-Biznisweb.gif)
+
+*Watch the [full video demonstration](AI-Agent-Biznisweb.mov) to see the AI agent in action with BizniWeb data.*
+
+## Hosted MCP Server by FlowHunt
+
+**We can host this MCP server for BizniWeb users at [FlowHunt](https://www.flowhunt.io)**. This means:
+- No installation or setup required on your side
+- Use the BizniWeb MCP server in FlowHunt flows and automations
+- **Compatible with ANY AI application that supports MCP servers** (Claude Desktop, Continue.dev, and more)
+- Secure, managed infrastructure with automatic updates
+- Contact us at [FlowHunt](https://www.flowhunt.io/contact) to get started
+
+### Custom Capabilities for Your E-shop
+
+**We can add special capabilities to this MCP server tailored to your specific needs**:
+- **Custom order processing workflows** - Automate complex order handling scenarios
+- **Advanced analytics and reporting** - Get insights specific to your business metrics
+- **Integration with other systems** - Connect your BizniWeb data with CRM, accounting, or warehouse systems
+- **Product management automation** - Bulk updates, inventory synchronization, pricing rules
+- **Customer service tools** - Automated responses, order status tracking, customer insights
+- **Any custom functionality** your e-commerce business requires
+
+If you need specific AI-powered tasks for your e-shop, we can extend this MCP server with custom tools designed for your unique business processes.
+
 We develop MCP servers for various platforms. If you need a custom MCP server for your business, check out our services at [FlowHunt](https://www.flowhunt.io/services/mcp-server-development/).
 
 ## What is MCP?
@@ -11,6 +39,15 @@ The Model Context Protocol (MCP) is an open protocol that enables seamless integ
 - Get real-time statistics and insights about your e-commerce data
 - Search for specific orders or customers without leaving your AI conversation
 - Analyze sales trends and order patterns through natural language
+
+### Compatible AI Applications
+
+This MCP server works with any AI application that supports the Model Context Protocol, including:
+- **Claude Desktop** - Anthropic's desktop application
+- **Continue.dev** - Open-source AI code assistant
+- **FlowHunt** - AI automation platform with MCP support
+- **Cline** - VS Code extension with MCP support
+- Any other MCP-compatible AI tool
 
 ## Features
 
@@ -236,6 +273,27 @@ Use the search_orders tool to find orders from customer "John Doe"
 3. Click the **"New API Token"** button
 4. Copy the generated token
 5. Add it to your `.env` file or Claude configuration
+
+### API Token Setup in BizniWeb
+
+To get your API token from BizniWeb:
+
+1. Navigate to **Nastavenia** (Settings) in the main menu
+2. Click on **BiznisWeb API** in the left sidebar
+3. In the **Autorizačné tokeny** section, you'll see your existing tokens
+4. Click **Nový API token** to create a new token if needed
+5. Copy the token (format: `b93jWTLi8SNmO1SaZYWOPsK8S5z7WTzN`)
+
+![BizniWeb API Token Location](api-token-biznisweb.jpg)
+
+The screenshot above shows exactly where to find your API token in the BizniWeb admin panel. The token is displayed in the **Token** field within the **Upraviť API token** (Edit API Token) dialog.
+
+**Important details from the BizniWeb API interface:**
+- **Názov**: Name your token (e.g., "flowhunt mcp")
+- **Token**: Your API token will be displayed here - this is what you need to copy
+- **Prístup k API (IP)**: IP restrictions (0.0.0.0 means no restrictions)
+- **Privilegovaný poskytovateľ**: Set to "partner" for full access
+- The interface also shows API usage statistics at the bottom
 
 ## Troubleshooting
 
