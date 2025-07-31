@@ -247,12 +247,16 @@ To get your API token from BizniWeb:
 4. Click **Nový API token** to create a new token if needed
 5. Copy the token (format: `b93jWTLi8SNmO1SaZYWOPsK8S5z7WTzN`)
 
+![BizniWeb API Token Location](api-token-biznisweb.jpg)
+
+The screenshot above shows exactly where to find your API token in the BizniWeb admin panel. The token is displayed in the **Token** field within the **Upraviť API token** (Edit API Token) dialog.
+
 **Important details from the BizniWeb API interface:**
 - **Názov**: Name your token (e.g., "flowhunt mcp")
-- **Token**: Your API token will be displayed here
+- **Token**: Your API token will be displayed here - this is what you need to copy
 - **Prístup k API (IP)**: IP restrictions (0.0.0.0 means no restrictions)
 - **Privilegovaný poskytovateľ**: Set to "partner" for full access
-- The interface also shows API usage statistics
+- The interface also shows API usage statistics at the bottom
 
 ## Troubleshooting
 
