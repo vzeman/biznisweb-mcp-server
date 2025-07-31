@@ -11,6 +11,18 @@ A Model Context Protocol (MCP) server that enables LLMs to interact with BizniWe
 - Secure, managed infrastructure with automatic updates
 - Contact us at [FlowHunt](https://www.flowhunt.io/contact) to get started
 
+### Custom Capabilities for Your E-shop
+
+**We can add special capabilities to this MCP server tailored to your specific needs**:
+- **Custom order processing workflows** - Automate complex order handling scenarios
+- **Advanced analytics and reporting** - Get insights specific to your business metrics
+- **Integration with other systems** - Connect your BizniWeb data with CRM, accounting, or warehouse systems
+- **Product management automation** - Bulk updates, inventory synchronization, pricing rules
+- **Customer service tools** - Automated responses, order status tracking, customer insights
+- **Any custom functionality** your e-commerce business requires
+
+If you need specific AI-powered tasks for your e-shop, we can extend this MCP server with custom tools designed for your unique business processes.
+
 We develop MCP servers for various platforms. If you need a custom MCP server for your business, check out our services at [FlowHunt](https://www.flowhunt.io/services/mcp-server-development/).
 
 ## What is MCP?
