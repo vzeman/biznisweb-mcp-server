@@ -239,13 +239,20 @@ Use the search_orders tool to find orders from customer "John Doe"
 
 ### API Token Setup in BizniWeb
 
-![BizniWeb API Token Setup](docs/biznisweb-api-token-setup.png)
+To get your API token from BizniWeb:
 
-The screenshot above shows where to find and configure your API token in the BizniWeb admin panel:
-- Access the **BiznisWeb API** section from the Settings menu
-- Your API token will be displayed in the token field
-- The token format is: `b93jWTLi8SNmO1SaZYWOPsK8S5z7WTzN`
-- You can see API usage statistics below the token
+1. Navigate to **Nastavenia** (Settings) in the main menu
+2. Click on **BiznisWeb API** in the left sidebar
+3. In the **Autorizačné tokeny** section, you'll see your existing tokens
+4. Click **Nový API token** to create a new token if needed
+5. Copy the token (format: `b93jWTLi8SNmO1SaZYWOPsK8S5z7WTzN`)
+
+**Important details from the BizniWeb API interface:**
+- **Názov**: Name your token (e.g., "flowhunt mcp")
+- **Token**: Your API token will be displayed here
+- **Prístup k API (IP)**: IP restrictions (0.0.0.0 means no restrictions)
+- **Privilegovaný poskytovateľ**: Set to "partner" for full access
+- The interface also shows API usage statistics
 
 ## Troubleshooting
 
