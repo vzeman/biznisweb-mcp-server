@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test script for BizniWeb MCP Server
+Test script for BiznisWeb MCP Server
 
 This script tests the MCP server by simulating tool calls
 """
@@ -9,11 +9,11 @@ import asyncio
 import json
 import os
 from datetime import datetime, timedelta
-from biznisweb_mcp.server import BizniWebMCPServer
+from biznisweb_mcp.server import BiznisWebMCPServer
 
 async def test_server():
     """Test the MCP server functionality"""
-    print("Testing BizniWeb MCP Server")
+    print("Testing BiznisWeb MCP Server")
     print("=" * 50)
     
     # Check for API token
@@ -22,7 +22,7 @@ async def test_server():
         print("Please set it in .env file or as environment variable")
         return
     
-    server = BizniWebMCPServer()
+    server = BiznisWebMCPServer()
     
     # Initialize client
     try:

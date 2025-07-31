@@ -1,4 +1,4 @@
-# BizniWeb MCP Server
+# BiznisWeb MCP Server
 
 A Model Context Protocol (MCP) server that enables LLMs to interact with BizniWeb e-shop through GraphQL API. This server allows AI assistants like Claude to access your BizniWeb data directly through conversational interfaces.
 

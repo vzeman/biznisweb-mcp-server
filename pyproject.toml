@@ -1,7 +1,7 @@
 [project]
 name = "biznisweb-mcp-server"
 version = "0.1.0"
-description = "MCP server for BizniWeb e-shop GraphQL API"
+description = "MCP server for BiznisWeb e-shop GraphQL API"
 requires-python = ">=3.10"
 dependencies = [
     "mcp>=1.1.2",
