@@ -279,12 +279,11 @@ class BizniWebMCPServer:
         """List orders with optional filtering"""
         variables = {}
         
-        # Add date filters directly as query parameters
+        # Add date filters - only use newer_from for start date
+        # Note: The GraphQL API doesn't seem to support end date filtering directly,
+        # so we'll filter by start date only and let the limit parameter control the range
         if 'from_date' in args:
             variables['newer_from'] = args['from_date'] + 'T00:00:00'
-        if 'to_date' in args:
-            # For 'changed_from', we might want to use this for filtering
-            variables['changed_from'] = args['to_date'] + 'T23:59:59'
         
         # Add status if provided
         if 'status' in args:
@@ -297,6 +296,14 @@ class BizniWebMCPServer:
             'sort': 'DESC'
         }
         
+        # If to_date is provided, we'll need to filter results client-side
+        to_date_filter = None
+        if 'to_date' in args:
+            try:
+                to_date_filter = datetime.strptime(args['to_date'], '%Y-%m-%d')
+            except ValueError:
+                logger.warning(f"Invalid to_date format: {args['to_date']}")
+        
         async with self.client as session:
             result = await session.execute(ORDER_LIST_QUERY, variable_values=variables)
         
@@ -304,23 +311,47 @@ class BizniWebMCPServer:
         orders = orders_data.get('data', [])
         page_info = orders_data.get('pageInfo', {})
         
+        # Apply client-side date filtering if to_date is specified
+        if to_date_filter:
+            filtered_orders = []
+            for order in orders:
+                try:
+                    # Handle both date and datetime formats
+                    order_date_str = order['pur_date'].split('T')[0] if 'T' in order['pur_date'] else order['pur_date'].split(' ')[0]
+                    order_date = datetime.strptime(order_date_str, '%Y-%m-%d')
+                    if order_date <= to_date_filter:
+                        filtered_orders.append(order)
+                except (ValueError, KeyError) as e:
+                    logger.warning(f"Error parsing order date for order {order.get('order_num', 'unknown')}: {e}")
+                    continue
+            orders = filtered_orders
+        
         # Format orders for better readability
         formatted_orders = []
         for order in orders:
-            customer = order.get('customer', {})
-            customer_name = customer.get('company_name', '')
-            if not customer_name:
-                customer_name = f"{customer.get('name', '')} {customer.get('surname', '')}".strip()
-            
-            formatted_orders.append({
-                'order_num': order['order_num'],
-                'date': order['pur_date'],
-                'customer': customer_name,
-                'email': customer.get('email'),
-                'status': order.get('status', {}).get('name'),
-                'total': f"{order.get('sum', {}).get('value')} {order.get('sum', {}).get('currency', {}).get('code')}",
-                'items_count': len(order.get('items', []))
-            })
+            try:
+                customer = order.get('customer', {})
+                customer_name = customer.get('company_name', '')
+                if not customer_name:
+                    customer_name = f"{customer.get('name', '')} {customer.get('surname', '')}".strip()
+                
+                # Safely get order sum and currency
+                order_sum = order.get('sum', {})
+                order_value = order_sum.get('value', 'N/A')
+                currency_code = order_sum.get('currency', {}).get('code', '')
+                
+                formatted_orders.append({
+                    'order_num': order['order_num'],
+                    'date': order['pur_date'],
+                    'customer': customer_name,
+                    'email': customer.get('email'),
+                    'status': order.get('status', {}).get('name'),
+                    'total': f"{order_value} {currency_code}".strip(),
+                    'items_count': len(order.get('items', []))
+                })
+            except Exception as e:
+                logger.error(f"Error formatting order {order.get('order_num', 'unknown')}: {e}")
+                continue
         
         return {
             'orders': formatted_orders,
@@ -390,45 +421,103 @@ class BizniWebMCPServer:
     
     async def _order_statistics(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """Get order statistics for date range"""
-        # Set default date range if not provided
-        to_date = datetime.now()
-        from_date = to_date - timedelta(days=30)
+        try:
+            # Set default date range if not provided
+            to_date = datetime.now()
+            from_date = to_date - timedelta(days=30)
+            
+            if 'from_date' in args:
+                from_date = datetime.strptime(args['from_date'], '%Y-%m-%d')
+            if 'to_date' in args:
+                to_date = datetime.strptime(args['to_date'], '%Y-%m-%d')
+            
+            logger.info(f"Fetching order statistics from {from_date.strftime('%Y-%m-%d')} to {to_date.strftime('%Y-%m-%d')}")
+            
+            # Fetch all orders in date range
+            all_orders = []
+            has_next = True
+            cursor = None
+            total_fetched = 0
+            
+            while has_next:
+                params = {
+                    'limit': 30,  # Maximum supported by the API
+                    'order_by': 'pur_date',
+                    'sort': 'DESC'  # Use DESC as that's what works
+                }
+                if cursor:
+                    params['cursor'] = cursor
+                
+                # Prepare variables
+                variables = {
+                    'params': params
+                }
+                
+                # Try with newer_from first, fallback to no date filter if it fails
+                try:
+                    variables['newer_from'] = from_date.strftime('%Y-%m-%dT00:00:00')
+                    
+                    async with self.client as session:
+                        result = await session.execute(ORDER_LIST_QUERY, variable_values=variables)
+                        
+                except Exception as e:
+                    logger.warning(f"Query with newer_from failed, trying without date filter: {e}")
+                    # Remove the date filter and fetch all recent orders
+                    variables = {
+                        'params': params
+                    }
+                    
+                    async with self.client as session:
+                        result = await session.execute(ORDER_LIST_QUERY, variable_values=variables)
+                
+                orders_data = result.get('getOrderList', {})
+                orders = orders_data.get('data', [])
+                
+                # Filter orders by date range client-side
+                filtered_orders = []
+                for order in orders:
+                    try:
+                        # Handle both date and datetime formats
+                        order_date_str = order['pur_date'].split('T')[0] if 'T' in order['pur_date'] else order['pur_date'].split(' ')[0]
+                        order_date = datetime.strptime(order_date_str, '%Y-%m-%d')
+                        
+                        # Check both start and end date
+                        if order_date >= from_date and order_date <= to_date:
+                            filtered_orders.append(order)
+                        elif order_date < from_date:
+                            # Since orders are sorted by date DESC (newest first), 
+                            # if we hit an order older than from_date, we can stop
+                            has_next = False
+                            break
+                        # If order_date > to_date, just continue (too new, but keep going since DESC)
+                            
+                    except (ValueError, KeyError) as e:
+                        logger.warning(f"Error parsing order date for statistics: {e}")
+                        continue
+                
+                all_orders.extend(filtered_orders)
+                total_fetched += len(orders)
+                
+                # Safety check to prevent infinite loops
+                if total_fetched > 10000:
+                    logger.warning("Reached maximum fetch limit of 10000 orders for statistics")
+                    break
+                
+                page_info = orders_data.get('pageInfo', {})
+                has_next = has_next and page_info.get('hasNextPage', False)
+                cursor = page_info.get('nextCursor')
+                
+                logger.debug(f"Fetched batch: {len(orders)} orders, total so far: {len(all_orders)}")
         
-        if 'from_date' in args:
-            from_date = datetime.strptime(args['from_date'], '%Y-%m-%d')
-        if 'to_date' in args:
-            to_date = datetime.strptime(args['to_date'], '%Y-%m-%d')
-        
-        # Fetch all orders in date range
-        all_orders = []
-        has_next = True
-        cursor = None
-        
-        while has_next:
-            params = {
-                'limit': 30,
-                'order_by': 'pur_date',
-                'sort': 'ASC'
+        except Exception as e:
+            logger.error(f"Error fetching orders for statistics: {str(e)}")
+            return {
+                'error': f'Failed to fetch orders: {str(e)}',
+                'period': {
+                    'from': from_date.strftime('%Y-%m-%d') if 'from_date' in locals() else None,
+                    'to': to_date.strftime('%Y-%m-%d') if 'to_date' in locals() else None
+                }
             }
-            if cursor:
-                params['cursor'] = cursor
-            
-            variables = {
-                'newer_from': from_date.strftime('%Y-%m-%dT00:00:00'),
-                'changed_from': to_date.strftime('%Y-%m-%dT23:59:59'),
-                'params': params
-            }
-            
-            async with self.client as session:
-                result = await session.execute(ORDER_LIST_QUERY, variable_values=variables)
-            
-            orders_data = result.get('getOrderList', {})
-            orders = orders_data.get('data', [])
-            all_orders.extend(orders)
-            
-            page_info = orders_data.get('pageInfo', {})
-            has_next = page_info.get('hasNextPage', False)
-            cursor = page_info.get('nextCursor')
         
         # Define excluded statuses
         excluded_statuses = [
@@ -439,39 +528,62 @@ class BizniWebMCPServer:
             'GoPay - platebni metoda potvrzena'
         ]
         
+        logger.info(f"Processing {len(all_orders)} orders for statistics calculation")
+        
         # Calculate statistics
         total_revenue = 0
         total_items = 0
         status_counts = {}
         daily_stats = {}
+        valid_orders_count = 0
         
         for order in all_orders:
-            # Skip orders with excluded statuses
-            status_name = order.get('status', {}).get('name', '')
-            if status_name in excluded_statuses:
+            try:
+                # Skip orders with excluded statuses
+                status_name = order.get('status', {}).get('name', '')
+                if status_name in excluded_statuses:
+                    logger.debug(f"Skipping order {order.get('order_num', 'unknown')} with excluded status: {status_name}")
+                    continue
+                
+                # Safely extract order value
+                order_sum = order.get('sum', {})
+                order_value = order_sum.get('value', 0)
+                
+                # Convert to float if it's a string
+                if isinstance(order_value, str):
+                    try:
+                        order_value = float(order_value)
+                    except (ValueError, TypeError):
+                        logger.warning(f"Invalid order value '{order_value}' for order {order.get('order_num', 'unknown')}")
+                        order_value = 0
+                
+                total_revenue += order_value
+                valid_orders_count += 1
+                
+                items_count = len(order.get('items', []))
+                total_items += items_count
+                
+                # Count by status
+                status = order.get('status', {}).get('name', 'Unknown')
+                status_counts[status] = status_counts.get(status, 0) + 1
+                
+                # Daily statistics
+                order_date = order['pur_date'].split('T')[0] if 'T' in order['pur_date'] else order['pur_date'].split(' ')[0]
+                if order_date not in daily_stats:
+                    daily_stats[order_date] = {
+                        'orders': 0,
+                        'revenue': 0,
+                        'items': 0
+                    }
+                daily_stats[order_date]['orders'] += 1
+                daily_stats[order_date]['revenue'] += order_value
+                daily_stats[order_date]['items'] += items_count
+                
+            except Exception as e:
+                logger.error(f"Error processing order {order.get('order_num', 'unknown')}: {str(e)}")
                 continue
-            
-            order_value = order.get('sum', {}).get('value', 0)
-            total_revenue += order_value
-            
-            items_count = len(order.get('items', []))
-            total_items += items_count
-            
-            # Count by status
-            status = order.get('status', {}).get('name', 'Unknown')
-            status_counts[status] = status_counts.get(status, 0) + 1
-            
-            # Daily statistics
-            order_date = order['pur_date'].split('T')[0]
-            if order_date not in daily_stats:
-                daily_stats[order_date] = {
-                    'orders': 0,
-                    'revenue': 0,
-                    'items': 0
-                }
-            daily_stats[order_date]['orders'] += 1
-            daily_stats[order_date]['revenue'] += order_value
-            daily_stats[order_date]['items'] += items_count
+        
+        logger.info(f"Processed {valid_orders_count} valid orders, total revenue: {total_revenue}")
         
         return {
             'period': {
@@ -480,12 +592,15 @@ class BizniWebMCPServer:
             },
             'summary': {
                 'total_orders': len(all_orders),
+                'valid_orders': valid_orders_count,
+                'excluded_orders': len(all_orders) - valid_orders_count,
                 'total_revenue': round(total_revenue, 2),
                 'total_items': total_items,
-                'average_order_value': round(total_revenue / len(all_orders), 2) if all_orders else 0
+                'average_order_value': round(total_revenue / valid_orders_count, 2) if valid_orders_count > 0 else 0
             },
             'status_breakdown': status_counts,
-            'daily_stats': daily_stats
+            'daily_stats': daily_stats,
+            'excluded_statuses': excluded_statuses
         }
     
     async def _search_orders(self, args: Dict[str, Any]) -> Dict[str, Any]:
