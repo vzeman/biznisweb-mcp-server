@@ -1,6 +1,16 @@
 # BizniWeb MCP Server
 
 A Model Context Protocol (MCP) server that enables LLMs to interact with BizniWeb e-shop through GraphQL API. This server allows AI assistants like Claude to access your BizniWeb data directly through conversational interfaces.
+
+## Hosted MCP Server by FlowHunt
+
+**We can host this MCP server for BizniWeb users at [FlowHunt](https://www.flowhunt.io)**. This means:
+- No installation or setup required on your side
+- Use the BizniWeb MCP server in FlowHunt flows and automations
+- **Compatible with ANY AI application that supports MCP servers** (Claude Desktop, Continue.dev, and more)
+- Secure, managed infrastructure with automatic updates
+- Contact us at [FlowHunt](https://www.flowhunt.io/contact) to get started
+
 We develop MCP servers for various platforms. If you need a custom MCP server for your business, check out our services at [FlowHunt](https://www.flowhunt.io/services/mcp-server-development/).
 
 ## What is MCP?
@@ -11,6 +21,15 @@ The Model Context Protocol (MCP) is an open protocol that enables seamless integ
 - Get real-time statistics and insights about your e-commerce data
 - Search for specific orders or customers without leaving your AI conversation
 - Analyze sales trends and order patterns through natural language
+
+### Compatible AI Applications
+
+This MCP server works with any AI application that supports the Model Context Protocol, including:
+- **Claude Desktop** - Anthropic's desktop application
+- **Continue.dev** - Open-source AI code assistant
+- **FlowHunt** - AI automation platform with MCP support
+- **Cline** - VS Code extension with MCP support
+- Any other MCP-compatible AI tool
 
 ## Features
 
