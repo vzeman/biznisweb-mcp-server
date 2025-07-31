@@ -2,6 +2,12 @@
 
 A Model Context Protocol (MCP) server that enables LLMs to interact with BizniWeb e-shop through GraphQL API. This server allows AI assistants like Claude to access your BizniWeb data directly through conversational interfaces.
 
+## Demo
+
+![BizniWeb AI Agent Demo](AI-Agent-Biznisweb.gif)
+
+*Watch the [full video demonstration](AI-Agent-Biznisweb.mov) to see the AI agent in action with BizniWeb data.*
+
 ## Hosted MCP Server by FlowHunt
 
 **We can host this MCP server for BizniWeb users at [FlowHunt](https://www.flowhunt.io)**. This means:
