@@ -1,18 +1,18 @@
 # BiznisWeb MCP Server
 
-A Model Context Protocol (MCP) server that enables LLMs to interact with BizniWeb e-shop through GraphQL API. This server allows AI assistants like Claude to access your BizniWeb data directly through conversational interfaces.
+A Model Context Protocol (MCP) server that enables LLMs to interact with BiznisWeb e-shop through GraphQL API. This server allows AI assistants like Claude to access your BiznisWeb data directly through conversational interfaces.
 
 ## Demo
 
-![BizniWeb AI Agent Demo](AI-Agent-Biznisweb.gif)
+![BiznisWeb AI Agent Demo](AI-Agent-Biznisweb.gif)
 
-*Watch the [full video demonstration](AI-Agent-Biznisweb.mov) to see the AI agent in action with BizniWeb data.*
+*Watch the [full video demonstration](AI-Agent-Biznisweb.mov) to see the AI agent in action with BiznisWeb data.*
 
 ## Hosted MCP Server by FlowHunt
 
-**We can host this MCP server for BizniWeb users at [FlowHunt](https://www.flowhunt.io)**. This means:
+**We can host this MCP server for BiznisWeb users at [FlowHunt](https://www.flowhunt.io)**. This means:
 - No installation or setup required on your side
-- Use the BizniWeb MCP server in FlowHunt flows and automations
+- Use the BiznisWeb MCP server in FlowHunt flows and automations
 - **Compatible with ANY AI application that supports MCP servers** (Claude Desktop, Continue.dev, and more)
 - Secure, managed infrastructure with automatic updates
 - Contact us at [FlowHunt](https://www.flowhunt.io/contact) to get started
@@ -22,7 +22,7 @@ A Model Context Protocol (MCP) server that enables LLMs to interact with BizniWe
 **We can add special capabilities to this MCP server tailored to your specific needs**:
 - **Custom order processing workflows** - Automate complex order handling scenarios
 - **Advanced analytics and reporting** - Get insights specific to your business metrics
-- **Integration with other systems** - Connect your BizniWeb data with CRM, accounting, or warehouse systems
+- **Integration with other systems** - Connect your BiznisWeb data with CRM, accounting, or warehouse systems
 - **Product management automation** - Bulk updates, inventory synchronization, pricing rules
 - **Customer service tools** - Automated responses, order status tracking, customer insights
 - **Any custom functionality** your e-commerce business requires
@@ -35,7 +35,7 @@ We develop MCP servers for various platforms. If you need a custom MCP server fo
 
 The Model Context Protocol (MCP) is an open protocol that enables seamless integration between AI assistants and external data sources. With this MCP server, you can:
 
-- Query your BizniWeb orders directly from Claude Desktop or other MCP-compatible AI tools
+- Query your BiznisWeb orders directly from Claude Desktop or other MCP-compatible AI tools
 - Get real-time statistics and insights about your e-commerce data
 - Search for specific orders or customers without leaving your AI conversation
 - Analyze sales trends and order patterns through natural language
@@ -80,7 +80,7 @@ Search orders by customer name, email, or order number
 ## Prerequisites
 
 - Python 3.8 or higher
-- BizniWeb API token (get it from Settings → BiznisWeb API in your BizniWeb account)
+- BiznisWeb API token (get it from Settings → BiznisWeb API in your BiznisWeb account)
 - Claude Desktop app (for Claude integration) or any MCP-compatible client
 
 ## Installation
@@ -105,7 +105,7 @@ pip install -e .
 4. Configure API credentials:
 ```bash
 cp .env.example .env
-# Edit .env and add your BizniWeb API token
+# Edit .env and add your BiznisWeb API token
 ```
 
 The `.env` file should contain:
@@ -123,7 +123,7 @@ BIZNISWEB_API_URL=https://[youraccount].flox.sk/api/graphql
    - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
    - Linux: `~/.config/Claude/claude_desktop_config.json`
 
-2. **Add the BizniWeb MCP server configuration:**
+2. **Add the BiznisWeb MCP server configuration:**
 
 ```json
 {
@@ -213,7 +213,7 @@ The server communicates via stdin/stdout using the MCP protocol.
 
 ## Example Usage in Claude
 
-Once configured, you can interact with your BizniWeb data naturally:
+Once configured, you can interact with your BiznisWeb data naturally:
 
 ### Basic Examples
 
@@ -263,20 +263,20 @@ Use the search_orders tool to find orders from customer "John Doe"
 
 ## Environment Variables
 
-- `BIZNISWEB_API_TOKEN`: Your BizniWeb API token (required)
+- `BIZNISWEB_API_TOKEN`: Your BiznisWeb API token (required)
 - `BIZNISWEB_API_URL`: API endpoint URL (default: https://vevo.flox.sk/api/graphql)
 
 ## Getting Your API Token
 
-1. Log in to your BizniWeb account
+1. Log in to your BiznisWeb account
 2. Navigate to: **Settings → BiznisWeb API**
 3. Click the **"New API Token"** button
 4. Copy the generated token
 5. Add it to your `.env` file or Claude configuration
 
-### API Token Setup in BizniWeb
+### API Token Setup in BiznisWeb
 
-To get your API token from BizniWeb:
+To get your API token from BiznisWeb:
 
 1. Navigate to **Nastavenia** (Settings) in the main menu
 2. Click on **BiznisWeb API** in the left sidebar
@@ -284,11 +284,11 @@ To get your API token from BizniWeb:
 4. Click **Nový API token** to create a new token if needed
 5. Copy the token (format: `b93jWTLi8SNmO1SaZYWOPsK8S5z7WTzN`)
 
-![BizniWeb API Token Location](api-token-biznisweb.jpg)
+![BiznisWeb API Token Location](api-token-biznisweb.jpg)
 
-The screenshot above shows exactly where to find your API token in the BizniWeb admin panel. The token is displayed in the **Token** field within the **Upraviť API token** (Edit API Token) dialog.
+The screenshot above shows exactly where to find your API token in the BiznisWeb admin panel. The token is displayed in the **Token** field within the **Upraviť API token** (Edit API Token) dialog.
 
-**Important details from the BizniWeb API interface:**
+**Important details from the BiznisWeb API interface:**
 - **Názov**: Name your token (e.g., "flowhunt mcp")
 - **Token**: Your API token will be displayed here - this is what you need to copy
 - **Prístup k API (IP)**: IP restrictions (0.0.0.0 means no restrictions)
@@ -299,7 +299,7 @@ The screenshot above shows exactly where to find your API token in the BizniWeb 
 
 ### Common Issues
 
-1. **"BizniWeb tools not available in Claude"**
+1. **"BiznisWeb tools not available in Claude"**
    - Make sure you restarted Claude Desktop after adding the configuration
    - Check that the `cwd` path in the config points to the correct directory
    - Verify the hammer icon (🔨) appears in Claude's input field
@@ -307,7 +307,7 @@ The screenshot above shows exactly where to find your API token in the BizniWeb 
 2. **"API token not found" error**
    - Ensure your `.env` file exists in the server directory
    - Check that the token is correctly formatted (no extra spaces)
-   - Verify the token hasn't expired in BizniWeb
+   - Verify the token hasn't expired in BiznisWeb
 
 3. **"Module not found" errors**
    - Make sure you're in the virtual environment: `source venv/bin/activate`
@@ -316,7 +316,7 @@ The screenshot above shows exactly where to find your API token in the BizniWeb 
 4. **Connection errors**
    - Check your internet connection
    - Verify the API URL is correct (should be https://vevo.flox.sk/api/graphql)
-   - Ensure your BizniWeb account has API access enabled
+   - Ensure your BiznisWeb account has API access enabled
 
 ### Debug Mode
 
@@ -374,7 +374,7 @@ This ensures that statistics and reports only include valid, completed orders.
 
 - Never commit your `.env` file to version control
 - Use environment variables or `.env` files for API tokens
-- The server only has read access to your BizniWeb data
+- The server only has read access to your BiznisWeb data
 - All communication happens locally between Claude and the MCP server
 
 ## License
