@@ -4,7 +4,7 @@ A Model Context Protocol (MCP) server that enables LLMs to interact with BiznisW
 
 This MCP Server demonstrates basic integration with BiznisWeb e-commerce software, offering read-only access to shop data. For production use cases requiring advanced
   functionality—such as updating products, managing inventory, processing customer orders, or providing automated customer support—we offer a comprehensive MCP server
-  hosted at http://www.FlowHunt.io.
+  hosted at [https://www.FlowHunt.io.](https://www.flowhunt.io/hosted-mcp-servers/biznisweb/)
 
   The FlowHunt platform enables complex e-commerce automation including product description updates, order status inquiries, inventory management, and intelligent customer
   service. When integrated with LiveAgent, the system seamlessly escalates conversations from chatbot to human agents when specialized assistance is needed, ensuring
